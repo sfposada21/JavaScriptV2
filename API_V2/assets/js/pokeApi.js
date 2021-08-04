@@ -8,41 +8,45 @@ const getData = (URL) => {
   return fetch(URL)
     .then((response) => response.json())
     .then((json) => {
-      llenarDatos(json.results), paginacion(json);
+      pokeData(json.results), paginacion(json);
     })
     .catch((error) => {
       console.log("Error: ", error);
     });
 };
 
-const getDataInfo = (URL) => {
-  return fetch(URL)
-    .then((response) => response.json())
-    .then((json) => {
-      llenarDatos(json.results)
+const pokeData = (data) => {
+  let html = "";
+  document.getElementById("datosPersonajes").innerHTML = " ";
+  data.forEach( (pj) => {
+    const URL = pj.url; 
+    return fetch(URL)
+    .then((response)=> response.json())
+    .then((json)=>{
+      llenarDatos(json, html)
     })
     .catch((error) => {
-      console.log("Error: ", error);
-    });
+      console.log("error", error);
+    })
+  }) 
 };
 
 //dibujar cards de personajes
-const llenarDatos = (data) => {
-  let html = "";
-  data.forEach((pj) => {
+const llenarDatos = (data ,html) => {
+    
     html += '<div class = "col mt-5" >';
     html += '<div class="card" style="width: 12rem;">';
-    //html += `<img src="${pj.image}" class="card-img-top" alt="${pj.name}">`;
+    html += `<img src="${data.sprites.other.dream_world.front_default}" class="card-img-top" alt="${data.name}">`;
     html += '<div class="card-body">'
-    html += `<h5 class="card-title"> ${pj.name} </h5>`
-    //html += `<p class="card-text"> Status: ${pj.status} </p>`    
+    html += `<h5 class="card-title"> Altura: ${data.height} </h5>`
+    html += `<p class="card-text"> PESO: ${data.weight} </p>`    
     //html += `<p class="card-text">Specie: ${pj.species} </p>`
     
     html += "</div>";
     html += "</div>";
     html += "</div>";
-  });
-  document.getElementById("datosPersonajes").innerHTML = html;
+    
+  document.getElementById("datosPersonajes").innerHTML += html;
 };
 
 // paginacion
